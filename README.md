@@ -1,5 +1,4 @@
 # Bai_Tap_Lon
-<<<<<<< HEAD
 # Web Scraping Bất Động Sản từ Batdongsan.com.vn
 
 Script Python tự động thu thập dữ liệu bài đăng bất động sản từ [batdongsan.com.vn](https://batdongsan.com.vn) và lưu thông tin vào file Excel. Có thể thiết lập lịch chạy mỗi ngày lúc 06:00 sáng.
@@ -73,5 +72,5 @@ python
 Sao chép
 Chỉnh sửa
 schedule.every().day.at("06:00").do(fetch_data)
-=======
+
 
