@@ -28,12 +28,11 @@ Script Python tự động thu thập dữ liệu bài đăng bất động sả
 ```bash
 pip install -r requirements.txt
 Hoặc cài trực tiếp:
-
-bash
-Sao chép
-Chỉnh sửa
+- bash
+- Sao chép
+- Chỉnh sửa
 pip install selenium pandas schedule openpyxl webdriver-manager
-⚙️ Hướng dẫn cài đặt ChromeDriver
+Hướng dẫn cài đặt ChromeDriver
 Kiểm tra phiên bản Chrome bạn đang sử dụng:
 Mở trình duyệt và nhập chrome://version
 
@@ -41,48 +40,36 @@ Tải ChromeDriver tương ứng tại:
 https://sites.google.com/chromium.org/driver/
 
 Cách sử dụng:
-
 Đặt chromedriver.exe cùng thư mục với file Python
-hoặc
-
 Thêm đường dẫn chromedriver.exe vào biến môi trường PATH
-
- Sử dụng với Visual Studio Code
+Sử dụng với Visual Studio Code
 Mở VS Code, tạo file main.py
-
 Dán mã Python vào
-
 Mở Terminal (Ctrl + `)
-
 Cài thư viện nếu chưa có:
-
-bash
-Sao chép
-Chỉnh sửa
-pip install selenium pandas schedule openpyxl webdriver-manager
+- bash
+- Sao chép
+- Chỉnh sửa
+- pip install selenium pandas schedule openpyxl webdriver-manager
 Chạy script:
-
-bash
-Sao chép
-Chỉnh sửa
-python main.py
- Cấu trúc dữ liệu đầu ra
+- bash
+- Sao chép
+- Chỉnh sửa
+- python main.py
+- Cấu trúc dữ liệu đầu ra
 File: batdongsan_output.xlsx
-
-Tiêu đề	Mô tả	Địa chỉ	Diện tích	Giá
-
+- Tiêu đề
+- Mô tả
+- Địa chỉ
+- Diện tích
+- Giá
  Thiết lập lịch chạy tự động
 Sử dụng thư viện schedule để chạy hàng ngày lúc 06:00 sáng:
-
-python
-Sao chép
-Chỉnh sửa
-import schedule
-
+- python
+- Sao chép
+- Chỉnh sửa
+- import schedule
 schedule.every().day.at("06:00").do(fetch_data)
  Gồm các file
 main.py — mã nguồn chính
-
 requirements.txt — các thư viện cần thiết
-
-README.md — hướng dẫn cài đặt
