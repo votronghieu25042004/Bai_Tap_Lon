@@ -24,13 +24,13 @@ def fetch_data():
         print(" Không tìm thấy bài đăng.")
         driver.quit()
         return
-
+    # 5. Lấy tất cả dữ liệu của các trang.
     cards = driver.find_elements(By.CLASS_NAME, "js__card")
     print(f" Số bài viết tìm thấy: {len(cards)}")
 
     data = []
 
-    #  Lấy tất cả dữ liệu(Tiêu đề, Mô tả, Hình ảnh, Nội dung bài viết) hiển thị ở bài viết.
+    # 4.Lấy tất cả dữ liệu(Tiêu đề, Mô tả, Hình ảnh, Nội dung bài viết) hiển thị ở bài viết.
     for card in cards:
         try:
             title = card.find_element(By.TAG_NAME, "h3").text  # Tiêu đề bài viết
@@ -57,13 +57,16 @@ def fetch_data():
 
     driver.quit()
 
-    # Lưu dữ liệu đã lấy được vào file excel hoặc csv.
+    #6.Lưu dữ liệu đã lấy được vào file excel hoặc csv.
     df = pd.DataFrame(data, columns=["Tiêu đề", "Mô tả", "Địa chỉ", "Diện tích", "Giá"])
     df.to_excel("batdongsan_output.xlsx", index=False)
     print(" Đã lưu file Excel: batdongsan_output.xlsx")
 
-# Set lịch chạy vào lúc 6h sáng hằng ngày.
+# 7.Set lịch chạy vào lúc 6h sáng hằng ngày.
 schedule.every().day.at("06:00").do(fetch_data)  
 while True:
     schedule.run_pending()
     time.sleep(60)
+# 8. Tạo project github chế độ public.
+# 9. Viết file README.md hướng dẫn cài đặt cho project github đầy đủ rõ ràng.
+# 10. Push(file code, README.md, requirements.txt) lên project và nộp link project github vào classroom.
