@@ -21,12 +21,12 @@ def fetch_data():
             EC.presence_of_element_located((By.CLASS_NAME, "js__card"))
         )
     except:
-        print("⛔ Không tìm thấy bài đăng.")
+        print(" Không tìm thấy bài đăng.")
         driver.quit()
         return
 
     cards = driver.find_elements(By.CLASS_NAME, "js__card")
-    print(f"✅ Số bài viết tìm thấy: {len(cards)}")
+    print(f" Số bài viết tìm thấy: {len(cards)}")
 
     data = []
 
@@ -60,7 +60,7 @@ def fetch_data():
     # Lưu dữ liệu đã lấy được vào file excel hoặc csv.
     df = pd.DataFrame(data, columns=["Tiêu đề", "Mô tả", "Địa chỉ", "Diện tích", "Giá"])
     df.to_excel("batdongsan_output.xlsx", index=False)
-    print("✅ Đã lưu file Excel: batdongsan_output.xlsx")
+    print(" Đã lưu file Excel: batdongsan_output.xlsx")
 
 # Set lịch chạy vào lúc 6h sáng hằng ngày.
 schedule.every().day.at("06:00").do(fetch_data)  
