@@ -1,52 +1,69 @@
-import requests
-from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import pandas as pd
-url = "https://batdongsan.com.vn/nha-dat-ban"
-headers = {
-    "User-Agent": "Mozilla/5.0"
-}
-response = requests.get(url, headers=headers)
-soup = BeautifulSoup(response.content, "html.parser")
-cards = soup.find_all("div", class_="js__card")
-links = []
-for card in cards:
-    a_tag = card.find("a", href=True)
-    if a_tag:
-        link = a_tag["href"]
-        if not link.startswith("https://"):
-            link = "https://batdongsan.com.vn" + link
-        links.append(link)
+import time
+import schedule
 
-print(f"Đã lấy được {len(links)} link bài viết.")
+def fetch_data():
+    options = Options()
+    options.add_argument('--disable-gpu')
+    options.add_argument('--no-sandbox')
 
-data = []
-for link in links:
-    print(f"Đang xử lý: {link}")
+    driver = webdriver.Chrome(options=options)
+    url = "https://batdongsan.com.vn/nha-dat-ban"
+    driver.get(url)
+
     try:
-        res = requests.get(link, headers=headers)
-        soup = BeautifulSoup(res.content, "html.parser")
+        WebDriverWait(driver, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "js__card"))
+        )
+    except:
+        print("⛔ Không tìm thấy bài đăng.")
+        driver.quit()
+        return
 
-        title = soup.find("h1").text.strip()
+    cards = driver.find_elements(By.CLASS_NAME, "js__card")
+    print(f"✅ Số bài viết tìm thấy: {len(cards)}")
+
+    data = []
+
+    #  Lấy tất cả dữ liệu(Tiêu đề, Mô tả, Hình ảnh, Nội dung bài viết) hiển thị ở bài viết.
+    for card in cards:
         try:
-            description = soup.find("div", class_="re__pr-short-description js__pr-description").text.strip()
+            title = card.find_element(By.TAG_NAME, "h3").text  # Tiêu đề bài viết
+        except:
+            title = ""
+        try:
+            description = card.find_element(By.CLASS_NAME, "re__card-description").text  # Mô tả 
         except:
             description = ""
         try:
-            address = soup.find("div", class_="re__pr-short-address js__pr-address").text.strip()
+            address = card.find_element(By.CLASS_NAME, "re__card-location").text  # Địa chỉ
         except:
             address = ""
         try:
-            info_blocks = soup.find_all("span", class_="re__pr-specs-content-item")
-            area = info_blocks[0].text.strip() if len(info_blocks) >= 1 else ""
-            price = info_blocks[1].text.strip() if len(info_blocks) >= 2 else ""
+            specs = card.find_elements(By.CLASS_NAME, "re__card-config-item")  # Diện tích và giá
+            area = specs[0].text if len(specs) > 0 else ""
+            price = specs[1].text if len(specs) > 1 else ""
         except:
             area = ""
             price = ""
-        data.append([title, description, address, area, price])
-    except Exception as e:
-        print(f"Lỗi: {e}")
-        continue
 
-df = pd.DataFrame(data, columns=["Tiêu đề", "Mô tả", "Địa chỉ", "Diện tích", "Giá"])
-df.to_excel("batdongsan_output.xlsx", index=False)
-print(" Đã lưu file Excel: batdongsan_output.xlsx")
+        item = [title, description, address, area, price]
+        data.append(item)
+
+    driver.quit()
+
+    # Lưu dữ liệu đã lấy được vào file excel hoặc csv.
+    df = pd.DataFrame(data, columns=["Tiêu đề", "Mô tả", "Địa chỉ", "Diện tích", "Giá"])
+    df.to_excel("batdongsan_output.xlsx", index=False)
+    print("✅ Đã lưu file Excel: batdongsan_output.xlsx")
+
+# Set lịch chạy vào lúc 6h sáng hằng ngày.
+schedule.every().day.at("06:00").do(fetch_data)  
+while True:
+    schedule.run_pending()
+    time.sleep(60)
